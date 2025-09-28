@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -38,37 +38,37 @@ api.interceptors.response.use(
 // API endpoints
 export const authAPI = {
   login: (credentials: { username: string; password: string }) =>
-    api.post('/auth/login', credentials),
+    api.post('/api/auth/login', credentials),
 };
 
 export const componentsAPI = {
   getAll: (params?: { skip?: number; limit?: number }) =>
-    api.get('/components/', { params }),
-  getById: (id: string) => api.get(`/components/${id}`),
-  create: (data: any) => api.post('/components/', data),
-  generateQR: (id: string) => api.post(`/components/${id}/qr`),
-  bulkCreate: (data: any[]) => api.post('/components/bulk-create', data),
+    api.get('/api/components/', { params }),
+  getById: (id: string) => api.get(`/api/components/${id}`),
+  create: (data: any) => api.post('/api/components/', data),
+  generateQR: (id: string) => api.post(`/api/components/${id}/qr`),
+  bulkCreate: (data: any[]) => api.post('/api/components/bulk-create', data),
 };
 
 export const vendorsAPI = {
   getAll: (params?: { skip?: number; limit?: number }) =>
-    api.get('/vendors/', { params }),
-  create: (data: any) => api.post('/vendors/', data),
+    api.get('/api/vendors/', { params }),
+  create: (data: any) => api.post('/api/vendors/', data),
 };
 
 export const inspectionsAPI = {
   getAll: (params?: { skip?: number; limit?: number }) =>
-    api.get('/inspections/', { params }),
-  create: (data: any) => api.post('/inspections/', data),
+    api.get('/api/inspections/', { params }),
+  create: (data: any) => api.post('/api/inspections/', data),
 };
 
 export const analyticsAPI = {
-  getDashboard: () => api.get('/analytics/dashboard'),
-  getVendorPerformance: () => api.get('/analytics/vendor-performance'),
+  getDashboard: () => api.get('/api/analytics/dashboard'),
+  getVendorPerformance: () => api.get('/api/analytics/vendor-performance'),
   getComponentLifecycle: (id: string) =>
-    api.get(`/analytics/component-lifecycle/${id}`),
+    api.get(`/api/analytics/component-lifecycle/${id}`),
 };
 
 export const scanAPI = {
-  scan: (id: string, data: any) => api.post(`/scan/${id}`, data),
+  scan: (id: string, data: any) => api.post(`/api/scan/${id}`, data),
 };

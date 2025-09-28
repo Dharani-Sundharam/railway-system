@@ -14,7 +14,7 @@ def populate_sample_data(db: Session):
     # Create sample users
     sample_users = [
         {"username": "admin", "email": "admin@indianrailways.gov.in", "full_name": "System Administrator", "role": "admin", "password": "admin123"},
-        {"username": "inspector1", "email": "inspector1@indianrailways.gov.in", "full_name": "Rajesh Kumar", "role": "inspector", "password": "insp123"},
+        {"username": "inspector1", "email": "inspector1@indianrailways.gov.in", "full_name": "Rajesh Kumar", "role": "inspector", "password": "inspector123"},
         {"username": "depot_manager", "email": "depot@indianrailways.gov.in", "full_name": "Priya Sharma", "role": "depot_manager", "password": "depot123"},
         {"username": "vendor_rep", "email": "vendor@example.com", "full_name": "Amit Patel", "role": "vendor", "password": "vendor123"},
     ]

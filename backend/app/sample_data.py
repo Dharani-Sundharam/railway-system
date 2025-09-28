@@ -20,6 +20,8 @@ def populate_sample_data(db: Session):
     ]
     
     for user_data in sample_users:
+        # Store passwords as plain text for simple verification
+        user_data["password"] = user_data["password"]  # Keep as plain text
         user = schemas.UserCreate(**user_data)
         crud.create_user(db, user)
     

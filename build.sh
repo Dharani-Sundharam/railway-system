@@ -53,8 +53,12 @@ else
     echo "⚠️  deploy.py not found, database will be initialized on startup"
 fi
 
-# Simple password verification enabled
-echo "✅ Simple password verification enabled"
+# Fix passwords to plain text
+echo "🔧 Fixing passwords to plain text..."
+if [ -f "fix_simple_passwords.py" ]; then
+    python fix_simple_passwords.py
+    echo "✅ Passwords fixed to plain text!"
+fi
 
 # Create static directories for backend
 echo "📁 Creating backend static directories..."

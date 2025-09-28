@@ -52,7 +52,22 @@ async def lifespan(app: FastAPI):
         admin_user = crud.get_user_by_username(db, "admin")
         if admin_user:
             print(f"✅ Admin user found: {admin_user.username}")
-            print("✅ Simple password verification enabled")
+            
+            # Test password verification
+            try:
+                test_auth = crud.authenticate_user(db, "admin", "admin123")
+                if test_auth:
+                    print("✅ Admin password verification working")
+                else:
+                    print("⚠️  Admin password verification failed - fixing passwords...")
+                    # Import and run password fix
+                    from fix_simple_passwords import fix_passwords_to_plain_text
+                    fix_passwords_to_plain_text()
+            except Exception as e:
+                print(f"⚠️  Password verification error: {e} - fixing passwords...")
+                # Import and run password fix
+                from fix_simple_passwords import fix_passwords_to_plain_text
+                fix_passwords_to_plain_text()
         else:
             print("❌ Admin user not found!")
             

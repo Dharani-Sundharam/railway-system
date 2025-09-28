@@ -100,7 +100,7 @@ def generate_qr_code(component_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Component not found")
     
     qr_path = generate_component_qr(component)
-    return {"qr_code_url": f"/static/qr_codes/{component.serial_id}.png"}
+    return {"qr_code_url": f"/backend-static/qr_codes/{component.serial_id}.png"}
 
 # Vendor endpoints
 @app.get("/vendors/", response_model=list[schemas.Vendor])

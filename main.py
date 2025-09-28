@@ -72,42 +72,63 @@ app.add_middleware(
 # Mount the backend API
 app.mount("/api", backend_app)
 
-# Serve static files (QR codes, uploads)
-static_path = Path(__file__).parent / "backend" / "static"
-if static_path.exists():
-    app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+# Serve backend static files (QR codes, uploads) at a different path
+backend_static_path = Path(__file__).parent / "backend" / "static"
+if backend_static_path.exists():
+    app.mount("/backend-static", StaticFiles(directory=str(backend_static_path)), name="backend-static")
 
-# Serve frontend static files
+# Serve frontend static files (CSS, JS, etc.)
 frontend_build_path = Path(__file__).parent / "frontend" / "build"
 if frontend_build_path.exists():
-    app.mount("/assets", StaticFiles(directory=str(frontend_build_path / "static")), name="assets")
+    # Mount static files from the build directory
+    app.mount("/static", StaticFiles(directory=str(frontend_build_path / "static")), name="static")
+    
+    # Serve other static files from build root
+    @app.get("/favicon.ico")
+    async def favicon():
+        favicon_path = frontend_build_path / "favicon.ico"
+        if favicon_path.exists():
+            return FileResponse(str(favicon_path))
+        return {"error": "Not found"}
+    
+    @app.get("/manifest.json")
+    async def manifest():
+        manifest_path = frontend_build_path / "manifest.json"
+        if manifest_path.exists():
+            return FileResponse(str(manifest_path))
+        return {"error": "Not found"}
 
 # Serve the React app for all non-API routes
 @app.get("/{full_path:path}")
 async def serve_frontend(request: Request, full_path: str):
     """Serve the React frontend for all non-API routes"""
     
-    # Don't serve frontend for API routes
-    if full_path.startswith("api/") or full_path.startswith("static/") or full_path.startswith("assets/"):
+    # Don't serve frontend for API routes or static files
+    if (full_path.startswith("api/") or 
+        full_path.startswith("static/") or 
+        full_path.startswith("backend-static/") or
+        full_path in ["favicon.ico", "manifest.json", "robots.txt"]):
         return {"error": "Not found"}
     
     # Serve index.html for all other routes (React Router)
-    index_path = frontend_build_path / "index.html"
-    if index_path.exists():
-        return FileResponse(str(index_path))
-    else:
-        return HTMLResponse("""
-        <html>
-            <head><title>Railway System</title></head>
-            <body>
-                <h1>Railway Track Fittings Management System</h1>
-                <p>Frontend not built yet. Please run:</p>
-                <code>cd website/frontend && npm install && npm run build</code>
-                <p>Then restart the application.</p>
-                <p><a href="/api/docs">API Documentation</a></p>
-            </body>
-        </html>
-        """)
+    if frontend_build_path.exists():
+        index_path = frontend_build_path / "index.html"
+        if index_path.exists():
+            return FileResponse(str(index_path))
+    
+    # Fallback if frontend not built
+    return HTMLResponse("""
+    <html>
+        <head><title>Railway System</title></head>
+        <body>
+            <h1>Railway Track Fittings Management System</h1>
+            <p>Frontend not built yet. Please run:</p>
+            <code>cd frontend && npm install && npm run build</code>
+            <p>Then restart the application.</p>
+            <p><a href="/api/docs">API Documentation</a></p>
+        </body>
+    </html>
+    """)
 
 # Health check
 @app.get("/")

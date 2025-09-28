@@ -1,6 +1,6 @@
-# Railway System Deployment on Render (Free Tier + SQLite)
+# Railway System Deployment on Render (Unified + Free Tier + SQLite)
 
-This guide will help you deploy the Indian Railways Track Fittings Management System on Render.com using the **FREE TIER** with SQLite database.
+This guide will help you deploy the Indian Railways Track Fittings Management System on Render.com as a **UNIFIED APPLICATION** using the **FREE TIER** with SQLite database.
 
 ## 🚀 Prerequisites
 
@@ -20,7 +20,9 @@ This guide will help you deploy the Indian Railways Track Fittings Management Sy
 
 2. **Verify Files**: Ensure these files are in your repository:
    - `render.yaml` (in root directory)
-   - `website/backend/requirements.txt`
+   - `main.py` (unified application)
+   - `requirements.txt` (in root directory)
+   - `build.sh` (build script)
 
 ### Step 2: Deploy Using Blueprint
 
@@ -32,33 +34,23 @@ This guide will help you deploy the Indian Railways Track Fittings Management Sy
 
 2. **Deploy Blueprint**:
    - Render will detect the `render.yaml` file
-   - Review the services configuration:
-     - **Backend Service**: Python web service with SQLite
-     - **Frontend Service**: Static site
-   - Click "Apply" to create both services
+   - Review the service configuration:
+     - **Unified Service**: Single Python web service serving both API and frontend
+   - Click "Apply" to create the service
 
 ### Step 3: Manual Service Creation (Alternative)
 
 If you prefer manual setup:
 
-#### Create Backend Service:
+#### Create Unified Service:
 1. Click "New +" → "Web Service"
 2. Connect your GitHub repository
 3. Configure:
-   - **Name**: `railway-backend`
+   - **Name**: `railway-system`
    - **Environment**: `Python 3`
-   - **Build Command**: `cd website/backend && pip install -r requirements.txt`
-   - **Start Command**: `cd website/backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - **Build Command**: `./build.sh && pip install -r requirements.txt`
+   - **Start Command**: `python main.py`
    - **Root Directory**: (leave empty - uses root)
-
-#### Create Frontend Service:
-1. Click "New +" → "Static Site"
-2. Connect your GitHub repository
-3. Configure:
-   - **Name**: `railway-frontend`
-   - **Root Directory**: (leave empty - uses root)
-   - **Build Command**: `cd website/frontend && npm install && npm run build`
-   - **Publish Directory**: `website/frontend/build`
 
 ### Step 4: Environment Variables
 

@@ -5,8 +5,8 @@
 
 set -e
 
-echo "🚂 Railway System - Render FREE TIER Deployment (SQLite)"
-echo "======================================================="
+echo "🚂 Railway System - Unified FREE TIER Deployment (SQLite)"
+echo "========================================================"
 echo ""
 
 # Colors for output
@@ -43,7 +43,10 @@ print_header "🔍 Checking deployment files..."
 # Check required files
 required_files=(
     "render.yaml"
-    "website/backend/requirements.txt"
+    "main.py"
+    "requirements.txt"
+    "build.sh"
+    "website/backend/app"
     "website/frontend/package.json"
 )
 
@@ -59,10 +62,11 @@ done
 print_header "🔧 Preparing for deployment..."
 
 print_status "Configuration Summary:"
-echo "  - Backend: Python FastAPI with SQLite"
-echo "  - Frontend: React static site"
+echo "  - Application: Unified Python app (backend + frontend)"
+echo "  - Backend: FastAPI with SQLite"
+echo "  - Frontend: React served as static files"
 echo "  - Database: SQLite (no external database needed)"
-echo "  - Services: 2 services (backend + frontend)"
+echo "  - Services: 1 unified service"
 echo "  - Plan: FREE TIER (no cost!)"
 echo ""
 
@@ -81,20 +85,18 @@ echo "   - Select your repository"
 echo "   - Click 'Apply' to deploy both services"
 echo ""
 echo "3. Environment Variables (auto-configured):"
-echo "   Backend Service:"
+echo "   Unified Service:"
 echo "   - DATABASE_URL: sqlite:///./railway_fittings.db"
 echo "   - SECRET_KEY: (auto-generated)"
-echo "   - CORS_ORIGINS: https://railway-frontend.onrender.com"
-echo "   - ALLOWED_HOSTS: railway-backend.onrender.com"
-echo ""
-echo "   Frontend Service:"
-echo "   - REACT_APP_API_URL: https://railway-backend.onrender.com"
+echo "   - CORS_ORIGINS: https://railway-system.onrender.com"
+echo "   - ALLOWED_HOSTS: railway-system.onrender.com"
+echo "   - REACT_APP_API_URL: https://railway-system.onrender.com/api"
 echo "   - REACT_APP_APP_NAME: Railway Fittings Management System"
 echo ""
 echo "4. After deployment:"
-echo "   - Test your backend API at: https://railway-backend.onrender.com"
-echo "   - Test your frontend at: https://railway-frontend.onrender.com"
-echo "   - Check API docs at: https://railway-backend.onrender.com/docs"
+echo "   - Test your application at: https://railway-system.onrender.com"
+echo "   - Test your API at: https://railway-system.onrender.com/api"
+echo "   - Check API docs at: https://railway-system.onrender.com/api/docs"
 echo ""
 
 print_header "🎯 Quick Commands:"

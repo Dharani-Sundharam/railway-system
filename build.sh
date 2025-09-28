@@ -13,6 +13,15 @@ if [ ! -f "main.py" ]; then
     exit 1
 fi
 
+# Install Python dependencies
+echo "📥 Installing Python dependencies..."
+if [ -f "requirements.txt" ]; then
+    pip install -r requirements.txt
+    echo "✅ Python dependencies installed!"
+else
+    echo "⚠️  requirements.txt not found, skipping Python dependencies"
+fi
+
 # Build frontend
 echo "📦 Building frontend..."
 if [ -d "frontend" ]; then
@@ -35,6 +44,15 @@ else
     exit 1
 fi
 
+# Initialize database
+echo "🗄️  Initializing database..."
+if [ -f "deploy.py" ]; then
+    python deploy.py
+    echo "✅ Database initialized!"
+else
+    echo "⚠️  deploy.py not found, database will be initialized on startup"
+fi
+
 # Create static directories for backend
 echo "📁 Creating backend static directories..."
 mkdir -p backend/static/qr_codes
@@ -48,4 +66,9 @@ echo "   2. Visit: http://localhost:8000"
 echo "   3. Login with: admin / admin123"
 echo ""
 echo "🌐 Your Railway System is ready!"
+echo ""
+echo "🚀 For Render deployment:"
+echo "   1. Push to GitHub"
+echo "   2. Connect to Render"
+echo "   3. Use render.yaml for automatic configuration"
 

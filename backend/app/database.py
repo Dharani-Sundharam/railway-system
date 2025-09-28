@@ -7,12 +7,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database configuration - Force SQLite for this deployment
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./backend/railway_fittings.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./railway_fittings.db")
 
 # Ensure we're using SQLite (override any PostgreSQL URLs)
 if not DATABASE_URL.startswith("sqlite"):
     print(f"Warning: Overriding DATABASE_URL from {DATABASE_URL} to SQLite")
-    DATABASE_URL = "sqlite:///./backend/railway_fittings.db"
+    DATABASE_URL = "sqlite:///./railway_fittings.db"
+
+print(f"Using database: {DATABASE_URL}")
 
 # Create engine
 engine = create_engine(

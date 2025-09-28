@@ -29,26 +29,44 @@ from app import models, crud, sample_data
 async def lifespan(app: FastAPI):
     """Application lifespan handler"""
     # Startup
-    print("Starting up Railway System...")
+    print("🚂 Starting up Railway System...")
     
     # Create database tables
+    print("📋 Creating database tables...")
     models.Base.metadata.create_all(bind=engine)
+    print("✅ Database tables created!")
     
     # Populate sample data on startup
     db = SessionLocal()
     try:
         # Check if data already exists
-        existing_components = crud.get_components(db, skip=0, limit=1)
-        if not existing_components:
+        existing_users = db.query(models.User).first()
+        if not existing_users:
+            print("📊 Populating sample data...")
             sample_data.populate_sample_data(db)
-            print("Sample data populated successfully!")
+            print("✅ Sample data populated successfully!")
+        else:
+            print("ℹ️  Database already contains data, skipping sample data population")
+            
+        # Verify admin user exists
+        admin_user = crud.get_user_by_username(db, "admin")
+        if admin_user:
+            print(f"✅ Admin user found: {admin_user.username}")
+        else:
+            print("❌ Admin user not found!")
+            
+    except Exception as e:
+        print(f"❌ Error during startup: {e}")
+        raise
     finally:
         db.close()
+    
+    print("🎉 Railway System startup complete!")
     
     yield
     
     # Shutdown
-    print("Shutting down Railway System...")
+    print("🛑 Shutting down Railway System...")
 
 # Create the main FastAPI app
 app = FastAPI(

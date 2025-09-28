@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Railway System - Render Deployment Script
+# Railway System - Render Deployment Script (SQLite Version)
 # This script helps prepare your application for Render deployment
 
 set -e
 
-echo "🚂 Railway System - Render Deployment Preparation"
-echo "================================================="
+echo "🚂 Railway System - Render Deployment Preparation (SQLite)"
+echo "========================================================="
 echo ""
 
 # Colors for output
@@ -43,11 +43,8 @@ print_header "🔍 Checking deployment files..."
 # Check required files
 required_files=(
     "render.yaml"
-    "backend/Dockerfile"
-    "frontend/Dockerfile"
-    "frontend/nginx.conf"
-    "backend/requirements.txt"
-    "frontend/package.json"
+    "website/backend/requirements.txt"
+    "website/frontend/package.json"
 )
 
 for file in "${required_files[@]}"; do
@@ -61,17 +58,18 @@ done
 
 print_header "🔧 Preparing for deployment..."
 
-# Generate a random secret key
-SECRET_KEY=$(openssl rand -hex 32 2>/dev/null || python3 -c "import secrets; print(secrets.token_hex(32))")
-
-print_status "Generated SECRET_KEY: $SECRET_KEY"
-print_warning "Save this SECRET_KEY for your Render environment variables!"
+print_status "Configuration Summary:"
+echo "  - Backend: Python FastAPI with SQLite"
+echo "  - Frontend: React static site"
+echo "  - Database: SQLite (no external database needed)"
+echo "  - Services: 2 services (backend + frontend)"
+echo ""
 
 print_header "📋 Deployment Checklist:"
 echo ""
 echo "1. Push your code to GitHub:"
 echo "   git add ."
-echo "   git commit -m 'Prepare for Render deployment'"
+echo "   git commit -m 'Deploy to Render with SQLite'"
 echo "   git push origin main"
 echo ""
 echo "2. Go to https://render.com and:"
@@ -79,12 +77,12 @@ echo "   - Sign up/Login to your account"
 echo "   - Click 'New +' → 'Blueprint'"
 echo "   - Connect your GitHub repository"
 echo "   - Select your repository"
-echo "   - Click 'Apply' to deploy"
+echo "   - Click 'Apply' to deploy both services"
 echo ""
-echo "3. Configure Environment Variables in Render:"
+echo "3. Environment Variables (auto-configured):"
 echo "   Backend Service:"
-echo "   - SECRET_KEY: $SECRET_KEY"
-echo "   - DATABASE_URL: (will be auto-configured from PostgreSQL service)"
+echo "   - DATABASE_URL: sqlite:///./railway_fittings.db"
+echo "   - SECRET_KEY: (auto-generated)"
 echo "   - CORS_ORIGINS: https://railway-frontend.onrender.com"
 echo "   - ALLOWED_HOSTS: railway-backend.onrender.com"
 echo ""
@@ -107,5 +105,13 @@ echo "# Check deployment status:"
 echo "# Visit https://dashboard.render.com"
 echo ""
 
+print_header "💡 Benefits of SQLite Deployment:"
+echo "  ✅ No external database setup required"
+echo "  ✅ Faster deployment"
+echo "  ✅ Lower cost (no database service)"
+echo "  ✅ Simpler configuration"
+echo "  ✅ Perfect for development and small to medium applications"
+echo ""
+
 print_success "Deployment preparation complete!"
-print_warning "Remember to save your SECRET_KEY: $SECRET_KEY"
+print_status "Your application will use SQLite database - no external database needed!"

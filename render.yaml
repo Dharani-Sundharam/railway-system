@@ -4,14 +4,12 @@ services:
     name: railway-backend
     env: python
     plan: starter
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: cd website/backend && pip install -r requirements.txt
+    startCommand: cd website/backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: railway-db
-          property: connectionString
+        value: sqlite:///./railway_fittings.db
       - key: SECRET_KEY
         generateValue: true
       - key: ALGORITHM
@@ -30,24 +28,10 @@ services:
     name: railway-frontend
     env: static
     plan: starter
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./build
+    buildCommand: cd website/frontend && npm install && npm run build
+    staticPublishPath: website/frontend/build
     envVars:
       - key: REACT_APP_API_URL
         value: https://railway-backend.onrender.com
       - key: REACT_APP_APP_NAME
         value: Railway Fittings Management System
-
-  # PostgreSQL Database
-  - type: pserv
-    name: railway-db
-    plan: starter
-    env: postgresql
-    region: oregon
-    envVars:
-      - key: POSTGRES_DB
-        value: railway_fittings
-      - key: POSTGRES_USER
-        value: railway_user
-      - key: POSTGRES_PASSWORD
-        generateValue: true

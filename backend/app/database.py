@@ -6,17 +6,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Database configuration
+# Database configuration - Force SQLite for this deployment
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./railway_fittings.db")
 
+# Ensure we're using SQLite (override any PostgreSQL URLs)
+if not DATABASE_URL.startswith("sqlite"):
+    print(f"Warning: Overriding DATABASE_URL from {DATABASE_URL} to SQLite")
+    DATABASE_URL = "sqlite:///./railway_fittings.db"
+
 # Create engine
-if DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(
-        DATABASE_URL, 
-        connect_args={"check_same_thread": False}  # Only for SQLite
-    )
-else:
-    engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL, 
+    connect_args={"check_same_thread": False}  # Only for SQLite
+)
 
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

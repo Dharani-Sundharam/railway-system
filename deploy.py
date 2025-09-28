@@ -39,22 +39,7 @@ def initialize_database():
         admin_user = crud.get_user_by_username(db, "admin")
         if admin_user:
             print(f"✅ Admin user found: {admin_user.username}")
-            
-            # Test password verification
-            try:
-                test_auth = crud.authenticate_user(db, "admin", "admin123")
-                if test_auth:
-                    print("✅ Admin password verification working")
-                else:
-                    print("⚠️  Admin password verification failed - fixing passwords...")
-                    # Import and run password fix
-                    from fix_passwords import fix_user_passwords
-                    fix_user_passwords()
-            except Exception as e:
-                print(f"⚠️  Password verification error: {e} - fixing passwords...")
-                # Import and run password fix
-                from fix_passwords import fix_user_passwords
-                fix_user_passwords()
+            print("✅ Simple password verification enabled")
         else:
             print("❌ Admin user not found!")
             

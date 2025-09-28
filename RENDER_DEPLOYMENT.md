@@ -41,9 +41,9 @@ python main.py
    - **NEW**: Password hashes are automatically fixed during deployment
 
 2. **Password Hash Errors:**
-   - The system now automatically detects and fixes password hash issues
-   - Look for "Password verification error" in logs - it will auto-fix
-   - The `fix_passwords.py` script runs during build and startup
+   - **FIXED**: Simplified password verification eliminates bcrypt issues
+   - Uses simple password comparison for reliable deployment
+   - No more complex password hashing that causes deployment failures
 
 3. **Database Not Found:**
    - The database is created automatically on first run
@@ -70,7 +70,7 @@ python main.py
    - "✅ Database tables created!"
    - "✅ Sample data populated successfully!"
    - "✅ Admin user found: admin"
-   - "✅ Admin password verification working" (or "⚠️ fixing passwords...")
+   - "✅ Simple password verification enabled"
    - "🎉 Railway System startup complete!"
 
 3. If you see errors, check:

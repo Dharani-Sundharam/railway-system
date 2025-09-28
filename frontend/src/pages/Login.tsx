@@ -7,7 +7,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { user, login } = useAuth();
+  const { user, login, bypassLogin } = useAuth();
 
   if (user) {
     return <Navigate to="/" replace />;
@@ -35,6 +35,18 @@ const Login: React.FC = () => {
       toast.success('Logged in as demo user!');
     } catch (error: any) {
       toast.error('Demo login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBypassLogin = async () => {
+    setLoading(true);
+    try {
+      await bypassLogin();
+      toast.success('Bypass login successful!');
+    } catch (error: any) {
+      toast.error('Bypass login failed');
     } finally {
       setLoading(false);
     }
@@ -108,6 +120,15 @@ const Login: React.FC = () => {
               className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-railway-blue disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Continue as Demo User'}
+            </button>
+            
+            <button
+              type="button"
+              onClick={handleBypassLogin}
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Signing in...' : '🧪 Bypass Login (Test Mode)'}
             </button>
           </div>
 

@@ -164,7 +164,7 @@ async def serve_frontend(request: Request, full_path: str):
 
 # Test login page
 @app.get("/test-login")
-async def test_login():
+async def test_login_page():
     """Test login page for debugging"""
     test_path = Path(__file__).parent / "test-login.html"
     if test_path.exists():

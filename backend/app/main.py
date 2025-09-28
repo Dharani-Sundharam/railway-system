@@ -58,17 +58,28 @@ async def startup_event():
 def read_root():
     return {"message": "Indian Railways Track Fittings Management System API", "status": "running"}
 
+# Test endpoint to bypass login (for debugging)
+@app.get("/test-login")
+def test_login():
+    """Test endpoint that returns a valid token for admin user"""
+    print("🧪 Test login endpoint called")
+    access_token = crud.create_access_token(data={"sub": "admin"})
+    return {"access_token": access_token, "token_type": "bearer", "message": "Test login successful"}
+
 # Authentication endpoints
 @app.post("/auth/login", response_model=schemas.Token)
 def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     """Login endpoint"""
+    print(f"🔐 Login attempt: username={user_credentials.username}")
     user = crud.authenticate_user(db, user_credentials.username, user_credentials.password)
     if not user:
+        print(f"❌ Login failed for username: {user_credentials.username}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    print(f"✅ Login successful for user: {user.username}")
     access_token = crud.create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 

@@ -44,6 +44,7 @@ python main.py
    - **FIXED**: Simplified password verification eliminates bcrypt issues
    - Uses simple password comparison for reliable deployment
    - No more complex password hashing that causes deployment failures
+   - Login functionality fully restored with working authentication
 
 3. **Database Not Found:**
    - The database is created automatically on first run

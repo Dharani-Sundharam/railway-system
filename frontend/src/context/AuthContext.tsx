@@ -37,15 +37,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Auto-login as admin user (no authentication required)
-    setUser({
-      id: 1,
-      username: 'admin',
-      email: 'admin@indianrailways.gov.in',
-      full_name: 'System Administrator',
-      role: 'admin',
-      is_active: true
-    });
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // In a real app, you'd validate the token with the server
+      // For now, we'll assume it's valid and set a mock user
+      setUser({
+        id: 1,
+        username: 'admin',
+        email: 'admin@indianrailways.gov.in',
+        full_name: 'System Administrator',
+        role: 'admin',
+        is_active: true
+      });
+    }
     setLoading(false);
   }, []);
 

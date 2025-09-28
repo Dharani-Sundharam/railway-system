@@ -8,6 +8,7 @@ import {
   QrCodeIcon,
   ChartBarIcon,
   UserIcon,
+  ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 
@@ -17,7 +18,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -96,6 +97,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </p>
                 <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
               </div>
+              <button
+                onClick={logout}
+                className="ml-auto p-1 text-gray-400 hover:text-gray-600"
+                title="Logout"
+              >
+                <ArrowRightOnRectangleIcon className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
@@ -109,6 +117,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <h1 className="text-lg font-semibold text-gray-900">
               Indian Railways - Track Fittings
             </h1>
+            <button
+              onClick={logout}
+              className="p-2 text-gray-400 hover:text-gray-600"
+            >
+              <ArrowRightOnRectangleIcon className="w-5 h-5" />
+            </button>
           </div>
         </div>
 

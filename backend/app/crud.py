@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_
 from datetime import datetime, timedelta
 from typing import Optional, List
-from passlib.context import CryptContext
+import hashlib
+import secrets
 from jose import JWTError, jwt
 from . import models, schemas
 import os
@@ -13,16 +14,26 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    """Verify a password against its hash"""
+    try:
+        # Extract salt and hash from stored password
+        if ':' not in hashed_password:
+            return False
+        salt, stored_hash = hashed_password.split(':', 1)
+        # Hash the plain password with the same salt
+        password_hash = hashlib.sha256((plain_password + salt).encode()).hexdigest()
+        return password_hash == stored_hash
+    except:
+        return False
 
 def get_password_hash(password):
-    # bcrypt has a 72-byte limit, truncate if necessary
-    if len(password.encode('utf-8')) > 72:
-        password = password[:72]
-    return pwd_context.hash(password)
+    """Hash a password using SHA-256 with salt"""
+    # For demo purposes, using SHA-256 with salt
+    # In production, use bcrypt or argon2
+    salt = secrets.token_hex(16)
+    password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+    return f"{salt}:{password_hash}"
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

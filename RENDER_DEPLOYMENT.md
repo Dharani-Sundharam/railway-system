@@ -238,3 +238,5 @@ Your Railway Fittings Management System should now be running on Render **FREE T
 - **Inspector**: `inspector1` / `insp123`
 - **Depot Manager**: `depot_manager` / `depot123`
 - **Vendor Rep**: `vendor_rep` / `vendor123`
+
+> **Note**: This demo uses simplified password hashing (SHA-256 with salt) for compatibility. In production, use bcrypt or argon2 for better security.

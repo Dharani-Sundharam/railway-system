@@ -42,6 +42,12 @@ const Components: React.FC = () => {
     queryFn: () => componentsAPI.getAll({ limit: 100 }).then(res => res.data),
   });
 
+  const { data: reportServiceStatus } = useQuery({
+    queryKey: ['reportServiceStatus'],
+    queryFn: () => reportsAPI.getServiceStatus().then(res => res.data),
+    retry: false,
+  });
+
   const generateReportMutation = useMutation({
     mutationFn: (componentId: string) => reportsAPI.generateComponentReport(componentId),
     onSuccess: (data) => {
@@ -116,10 +122,18 @@ const Components: React.FC = () => {
   };
 
   const handleGenerateReport = (componentId: string) => {
+    if (!reportServiceStatus?.available) {
+      alert('Report generation service is not available. Please check if the Google Generative AI package is installed.');
+      return;
+    }
     generateReportMutation.mutate(componentId);
   };
 
   const handleGenerateBulkReport = () => {
+    if (!reportServiceStatus?.available) {
+      alert('Report generation service is not available. Please check if the Google Generative AI package is installed.');
+      return;
+    }
     if (selectedComponents.length === 0) {
       alert('Please select at least one component to generate a report.');
       return;
@@ -157,12 +171,18 @@ const Components: React.FC = () => {
           {selectedComponents.length > 0 && (
             <button
               onClick={handleGenerateBulkReport}
-              disabled={generateBulkReportMutation.isPending}
-              className="btn-secondary flex items-center"
+              disabled={generateBulkReportMutation.isPending || !reportServiceStatus?.available}
+              className="btn-secondary flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              title={!reportServiceStatus?.available ? 'Report generation service not available' : ''}
             >
               <DocumentTextIcon className="w-4 h-4 mr-2" />
               {generateBulkReportMutation.isPending ? 'Generating...' : `Generate Report (${selectedComponents.length})`}
             </button>
+          )}
+          {!reportServiceStatus?.available && (
+            <div className="text-sm text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">
+              ⚠️ AI Report service unavailable
+            </div>
           )}
           <button className="btn-primary flex items-center">
             <PlusIcon className="w-4 h-4 mr-2" />
@@ -326,9 +346,9 @@ const Components: React.FC = () => {
                       </Link>
                       <button
                         onClick={() => handleGenerateReport(component.serial_id)}
-                        disabled={generateReportMutation.isPending}
-                        className="text-green-600 hover:text-green-700 disabled:text-gray-400"
-                        title="Generate AI Report"
+                        disabled={generateReportMutation.isPending || !reportServiceStatus?.available}
+                        className="text-green-600 hover:text-green-700 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        title={!reportServiceStatus?.available ? 'AI Report service unavailable' : 'Generate AI Report'}
                       >
                         <DocumentTextIcon className="w-4 h-4" />
                       </button>

@@ -9,7 +9,18 @@ from .database import SessionLocal, engine
 from .auth import get_current_user
 from .qr_generator import generate_component_qr
 from .sample_data import populate_sample_data
-from .report_generator import generate_component_report, generate_bulk_report
+# Import report generator with fallback
+try:
+    from .report_generator import generate_component_report, generate_bulk_report
+    REPORT_GENERATOR_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️  Report generator not available: {e}")
+    REPORT_GENERATOR_AVAILABLE = False
+    # Create dummy functions for when report generator is not available
+    def generate_component_report(*args, **kwargs):
+        return {"error": "Report generation not available - Google Generative AI package not installed"}
+    def generate_bulk_report(*args, **kwargs):
+        return {"error": "Report generation not available - Google Generative AI package not installed"}
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
@@ -178,6 +189,11 @@ def bulk_create_components(components: list[schemas.ComponentCreate], db: Sessio
 @app.post("/reports/component/{component_id}")
 def generate_component_report_endpoint(component_id: str, db: Session = Depends(get_db)):
     """Generate AI-powered report for a single component"""
+    if not REPORT_GENERATOR_AVAILABLE:
+        raise HTTPException(
+            status_code=503, 
+            detail="Report generation service is not available. Google Generative AI package is not installed."
+        )
     try:
         report = generate_component_report(db, component_id)
         return report
@@ -187,6 +203,11 @@ def generate_component_report_endpoint(component_id: str, db: Session = Depends(
 @app.post("/reports/bulk")
 def generate_bulk_report_endpoint(request: schemas.ReportRequest, db: Session = Depends(get_db)):
     """Generate AI-powered bulk report for multiple components"""
+    if not REPORT_GENERATOR_AVAILABLE:
+        raise HTTPException(
+            status_code=503, 
+            detail="Report generation service is not available. Google Generative AI package is not installed."
+        )
     try:
         if request.report_type == "bulk":
             report = generate_bulk_report(db, request.component_ids)
@@ -204,6 +225,14 @@ def generate_bulk_report_endpoint(request: schemas.ReportRequest, db: Session = 
         return report
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to generate bulk report: {str(e)}")
+
+@app.get("/reports/status")
+def get_report_service_status():
+    """Check if the report generation service is available"""
+    return {
+        "available": REPORT_GENERATOR_AVAILABLE,
+        "message": "Report generation service is available" if REPORT_GENERATOR_AVAILABLE else "Report generation service is not available - Google Generative AI package not installed"
+    }
 
 @app.get("/reports/component/{component_id}/preview")
 def get_component_report_preview(component_id: str, db: Session = Depends(get_db)):

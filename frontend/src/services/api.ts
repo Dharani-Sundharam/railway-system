@@ -80,4 +80,6 @@ export const reportsAPI = {
     api.post('/api/reports/bulk', { component_ids: componentIds, report_type: reportType }),
   getComponentPreview: (componentId: string) =>
     api.get(`/api/reports/component/${componentId}/preview`),
+  getServiceStatus: () =>
+    api.get('/api/reports/status'),
 };

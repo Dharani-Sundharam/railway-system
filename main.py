@@ -97,6 +97,20 @@ if frontend_build_path.exists():
         if manifest_path.exists():
             return FileResponse(str(manifest_path))
         return {"error": "Not found"}
+    
+    @app.get("/main_logo_32.png")
+    async def logo_32():
+        logo_path = frontend_build_path / "main_logo_32.png"
+        if logo_path.exists():
+            return FileResponse(str(logo_path))
+        return {"error": "Not found"}
+    
+    @app.get("/main_logo_64.png")
+    async def logo_64():
+        logo_path = frontend_build_path / "main_logo_64.png"
+        if logo_path.exists():
+            return FileResponse(str(logo_path))
+        return {"error": "Not found"}
 
 # Serve the React app for all non-API routes
 @app.get("/{full_path:path}")
@@ -107,7 +121,7 @@ async def serve_frontend(request: Request, full_path: str):
     if (full_path.startswith("api/") or 
         full_path.startswith("static/") or 
         full_path.startswith("backend-static/") or
-        full_path in ["favicon.ico", "manifest.json", "robots.txt"]):
+        full_path in ["favicon.ico", "manifest.json", "robots.txt", "main_logo_32.png", "main_logo_64.png"]):
         return {"error": "Not found"}
     
     # Serve index.html for all other routes (React Router)

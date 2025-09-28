@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_
 from datetime import datetime, timedelta
 from typing import Optional, List
-from passlib.context import CryptContext
 from jose import JWTError, jwt
 from . import models, schemas
 import os
@@ -12,8 +11,6 @@ from datetime import datetime, timedelta
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password, hashed_password):
     # Simple password verification for demo purposes

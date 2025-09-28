@@ -231,3 +231,10 @@ Your Railway Fittings Management System should now be running on Render **FREE T
 3. **Builds**: Monitor your 90-minute monthly build limit
 4. **Sleep Mode**: Services automatically sleep to save resources
 5. **No Database Costs**: SQLite eliminates external database fees
+
+## 🔑 Demo Credentials:
+
+- **Admin**: `admin` / `admin123`
+- **Inspector**: `inspector1` / `insp123`
+- **Depot Manager**: `depot_manager` / `depot123`
+- **Vendor Rep**: `vendor_rep` / `vendor123`

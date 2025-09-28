@@ -5,8 +5,8 @@
 
 set -e
 
-echo "🚂 Railway System - Render Deployment Preparation (SQLite)"
-echo "========================================================="
+echo "🚂 Railway System - Render FREE TIER Deployment (SQLite)"
+echo "======================================================="
 echo ""
 
 # Colors for output
@@ -63,6 +63,7 @@ echo "  - Backend: Python FastAPI with SQLite"
 echo "  - Frontend: React static site"
 echo "  - Database: SQLite (no external database needed)"
 echo "  - Services: 2 services (backend + frontend)"
+echo "  - Plan: FREE TIER (no cost!)"
 echo ""
 
 print_header "📋 Deployment Checklist:"
@@ -105,12 +106,14 @@ echo "# Check deployment status:"
 echo "# Visit https://dashboard.render.com"
 echo ""
 
-print_header "💡 Benefits of SQLite Deployment:"
+print_header "💡 Benefits of FREE TIER + SQLite Deployment:"
+echo "  ✅ Completely FREE (no cost at all!)"
 echo "  ✅ No external database setup required"
 echo "  ✅ Faster deployment"
-echo "  ✅ Lower cost (no database service)"
+echo "  ✅ No database service costs"
 echo "  ✅ Simpler configuration"
 echo "  ✅ Perfect for development and small to medium applications"
+echo "  ⚠️  Services sleep after 15 minutes (wake up in ~30 seconds)"
 echo ""
 
 print_success "Deployment preparation complete!"

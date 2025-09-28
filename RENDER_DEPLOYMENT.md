@@ -1,6 +1,6 @@
-# Railway System Deployment on Render (SQLite Version)
+# Railway System Deployment on Render (Free Tier + SQLite)
 
-This guide will help you deploy the Indian Railways Track Fittings Management System on Render.com using SQLite database.
+This guide will help you deploy the Indian Railways Track Fittings Management System on Render.com using the **FREE TIER** with SQLite database.
 
 ## 🚀 Prerequisites
 
@@ -171,16 +171,27 @@ REACT_APP_APP_NAME=Railway Fittings Management System
    - SQLite file is private to the service
    - No external database connections
 
-## 💰 Cost Estimation
+## 💰 Free Tier Configuration
 
-### Free Tier
-- **Web Services**: 750 hours/month (enough for development)
-- **Static Sites**: Unlimited
-- **Total Cost**: $0 for development/testing
+### ✅ What's Included in Free Tier:
+- **Web Services**: 750 hours/month (31 days = 744 hours)
+- **Static Sites**: Unlimited bandwidth and builds
+- **Build Time**: 90 minutes per month
+- **Sleep Mode**: Services sleep after 15 minutes of inactivity
+- **Total Cost**: **$0** - Completely free!
 
-### Paid Plans
-- **Starter**: $7/month per service
-- **Standard**: $25/month per service
+### ⚠️ Free Tier Limitations:
+- **Sleep Mode**: Services wake up when accessed (takes ~30 seconds)
+- **Build Time**: Limited to 90 minutes per month
+- **Memory**: 512MB RAM per service
+- **CPU**: Shared resources
+- **Custom Domains**: Not available on free tier
+
+### 💡 Free Tier Optimization:
+- **SQLite Database**: No external database costs
+- **Static Frontend**: Unlimited bandwidth
+- **Efficient Builds**: Optimized build commands
+- **Auto-sleep**: Saves resources when not in use
 
 ## 🚀 Going Live
 
@@ -189,14 +200,16 @@ REACT_APP_APP_NAME=Railway Fittings Management System
    - Verify frontend functionality
    - Check database operations
 
-2. **Custom Domain** (Optional):
-   - Add custom domain in service settings
-   - Update CORS_ORIGINS environment variable
+2. **Free Tier Considerations**:
+   - Services will sleep after 15 minutes of inactivity
+   - First request after sleep takes ~30 seconds to wake up
+   - Perfect for development, testing, and low-traffic applications
+   - No custom domains on free tier (use .onrender.com URLs)
 
 3. **Monitor**:
-   - Watch for errors
-   - Monitor performance
-   - Set up alerts
+   - Watch for errors in Render dashboard
+   - Monitor build time usage (90 minutes/month limit)
+   - Check service uptime and sleep patterns
 
 ## 📞 Support
 
@@ -208,11 +221,19 @@ REACT_APP_APP_NAME=Railway Fittings Management System
 ## 🎯 Quick Start Checklist
 
 - [ ] Push code to GitHub
-- [ ] Create Render account
-- [ ] Deploy using Blueprint
+- [ ] Create Render account (free)
+- [ ] Deploy using Blueprint (free tier)
 - [ ] Test backend API
 - [ ] Test frontend
-- [ ] Set up custom domain (optional)
+- [ ] Understand sleep mode behavior
 - [ ] Go live!
 
-Your Railway Fittings Management System should now be running on Render with SQLite! 🚂
+Your Railway Fittings Management System should now be running on Render **FREE TIER** with SQLite! 🚂
+
+## 💡 Pro Tips for Free Tier:
+
+1. **First Load**: Expect ~30 second delay when services wake from sleep
+2. **Development**: Perfect for testing and development
+3. **Builds**: Monitor your 90-minute monthly build limit
+4. **Sleep Mode**: Services automatically sleep to save resources
+5. **No Database Costs**: SQLite eliminates external database fees

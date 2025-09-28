@@ -38,12 +38,18 @@ python main.py
    - Check Render logs for database initialization errors
    - Ensure the `deploy.py` script runs successfully
    - Verify that sample data is populated
+   - **NEW**: Password hashes are automatically fixed during deployment
 
-2. **Database Not Found:**
+2. **Password Hash Errors:**
+   - The system now automatically detects and fixes password hash issues
+   - Look for "Password verification error" in logs - it will auto-fix
+   - The `fix_passwords.py` script runs during build and startup
+
+3. **Database Not Found:**
    - The database is created automatically on first run
    - Check that the `DATABASE_URL` environment variable is set correctly
 
-3. **Sample Data Not Populated:**
+4. **Sample Data Not Populated:**
    - The `deploy.py` script should populate sample data automatically
    - Check logs for any errors during data population
 
@@ -64,6 +70,7 @@ python main.py
    - "✅ Database tables created!"
    - "✅ Sample data populated successfully!"
    - "✅ Admin user found: admin"
+   - "✅ Admin password verification working" (or "⚠️ fixing passwords...")
    - "🎉 Railway System startup complete!"
 
 3. If you see errors, check:

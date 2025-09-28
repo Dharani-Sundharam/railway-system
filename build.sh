@@ -53,6 +53,13 @@ else
     echo "⚠️  deploy.py not found, database will be initialized on startup"
 fi
 
+# Fix password hashes if needed
+echo "🔧 Checking password hashes..."
+if [ -f "fix_passwords.py" ]; then
+    python fix_passwords.py
+    echo "✅ Password hashes checked/fixed!"
+fi
+
 # Create static directories for backend
 echo "📁 Creating backend static directories..."
 mkdir -p backend/static/qr_codes

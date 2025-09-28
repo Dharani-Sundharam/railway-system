@@ -72,3 +72,12 @@ export const analyticsAPI = {
 export const scanAPI = {
   scan: (id: string, data: any) => api.post(`/api/scan/${id}`, data),
 };
+
+export const reportsAPI = {
+  generateComponentReport: (componentId: string) =>
+    api.post(`/api/reports/component/${componentId}`),
+  generateBulkReport: (componentIds: string[], reportType: string = 'individual') =>
+    api.post('/api/reports/bulk', { component_ids: componentIds, report_type: reportType }),
+  getComponentPreview: (componentId: string) =>
+    api.get(`/api/reports/component/${componentId}/preview`),
+};

@@ -236,3 +236,21 @@ class ComponentLifecycle(BaseModel):
     inspections: List[Inspection]
     scan_records: List[ScanRecord]
     timeline_events: List[dict]
+
+# Report schemas
+class ComponentReport(BaseModel):
+    component_id: str
+    generated_at: str
+    report_content: str
+    component_summary: dict
+    raw_data: dict
+
+class BulkReport(BaseModel):
+    bulk_report: str
+    individual_reports: List[ComponentReport]
+    generated_at: str
+    total_components: int
+
+class ReportRequest(BaseModel):
+    component_ids: List[str]
+    report_type: str = "individual"  # "individual" or "bulk"

@@ -9,6 +9,7 @@ from .database import SessionLocal, engine
 from .auth import get_current_user
 from .qr_generator import generate_component_qr
 from .sample_data import populate_sample_data
+from .report_generator import generate_component_report, generate_bulk_report
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
@@ -172,6 +173,63 @@ def bulk_create_components(components: list[schemas.ComponentCreate], db: Sessio
         component = crud.create_component(db, component_data)
         created_components.append(component)
     return {"created_count": len(created_components), "components": created_components}
+
+# Report generation endpoints
+@app.post("/reports/component/{component_id}")
+def generate_component_report_endpoint(component_id: str, db: Session = Depends(get_db)):
+    """Generate AI-powered report for a single component"""
+    try:
+        report = generate_component_report(db, component_id)
+        return report
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate report: {str(e)}")
+
+@app.post("/reports/bulk")
+def generate_bulk_report_endpoint(request: schemas.ReportRequest, db: Session = Depends(get_db)):
+    """Generate AI-powered bulk report for multiple components"""
+    try:
+        if request.report_type == "bulk":
+            report = generate_bulk_report(db, request.component_ids)
+        else:
+            # Generate individual reports
+            reports = []
+            for component_id in request.component_ids:
+                report = generate_component_report(db, component_id)
+                reports.append(report)
+            report = {
+                "individual_reports": reports,
+                "generated_at": reports[0]["generated_at"] if reports else None,
+                "total_components": len(request.component_ids)
+            }
+        return report
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate bulk report: {str(e)}")
+
+@app.get("/reports/component/{component_id}/preview")
+def get_component_report_preview(component_id: str, db: Session = Depends(get_db)):
+    """Get a quick preview of component data for report generation"""
+    try:
+        component = crud.get_component_by_serial(db, component_id)
+        if not component:
+            raise HTTPException(status_code=404, detail="Component not found")
+        
+        inspections = crud.get_inspections_by_component(db, component.id)
+        scan_records = crud.get_scan_records_by_component(db, component.id)
+        
+        return {
+            "component_id": component_id,
+            "component_type": component.component_type.value,
+            "current_status": component.current_status.value,
+            "vendor": component.vendor.name if component.vendor else None,
+            "location": f"{component.location.zone} - {component.location.division}" if component.location else None,
+            "total_inspections": len(inspections),
+            "total_scans": len(scan_records),
+            "last_inspection": max([i.inspection_date for i in inspections]).isoformat() if inspections else None,
+            "manufacturing_date": component.manufacturing_date.isoformat() if component.manufacturing_date else None,
+            "warranty_end_date": component.warranty_end_date.isoformat() if component.warranty_end_date else None,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get component preview: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
   MagnifyingGlassIcon,
   PlusIcon,
   QrCodeIcon,
   EyeIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
-import { componentsAPI } from '../services/api';
+import { componentsAPI, reportsAPI } from '../services/api';
 import { format } from 'date-fns';
+import ReportModal from '../components/ReportModal';
 
 interface Component {
   id: number;
@@ -31,10 +33,37 @@ const Components: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [selectedComponents, setSelectedComponents] = useState<string[]>([]);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [currentReport, setCurrentReport] = useState<any>(null);
 
   const { data: components, isLoading } = useQuery({
     queryKey: ['components'],
     queryFn: () => componentsAPI.getAll({ limit: 100 }).then(res => res.data),
+  });
+
+  const generateReportMutation = useMutation({
+    mutationFn: (componentId: string) => reportsAPI.generateComponentReport(componentId),
+    onSuccess: (data) => {
+      setCurrentReport(data.data);
+      setReportModalOpen(true);
+    },
+    onError: (error) => {
+      console.error('Failed to generate report:', error);
+      alert('Failed to generate report. Please try again.');
+    },
+  });
+
+  const generateBulkReportMutation = useMutation({
+    mutationFn: (componentIds: string[]) => reportsAPI.generateBulkReport(componentIds, 'individual'),
+    onSuccess: (data) => {
+      setCurrentReport(data.data);
+      setReportModalOpen(true);
+    },
+    onError: (error) => {
+      console.error('Failed to generate bulk report:', error);
+      alert('Failed to generate bulk report. Please try again.');
+    },
   });
 
   const filteredComponents = components?.filter((component: Component) => {
@@ -78,6 +107,34 @@ const Components: React.FC = () => {
     return normalizedType.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
   };
 
+  const handleComponentSelect = (componentId: string) => {
+    setSelectedComponents(prev => 
+      prev.includes(componentId) 
+        ? prev.filter(id => id !== componentId)
+        : [...prev, componentId]
+    );
+  };
+
+  const handleGenerateReport = (componentId: string) => {
+    generateReportMutation.mutate(componentId);
+  };
+
+  const handleGenerateBulkReport = () => {
+    if (selectedComponents.length === 0) {
+      alert('Please select at least one component to generate a report.');
+      return;
+    }
+    generateBulkReportMutation.mutate(selectedComponents);
+  };
+
+  const handleSelectAll = () => {
+    if (selectedComponents.length === filteredComponents.length) {
+      setSelectedComponents([]);
+    } else {
+      setSelectedComponents(filteredComponents.map((c: Component) => c.serial_id));
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -96,10 +153,22 @@ const Components: React.FC = () => {
             Manage track fittings and components
           </p>
         </div>
-        <button className="btn-primary flex items-center">
-          <PlusIcon className="w-4 h-4 mr-2" />
-          Add Component
-        </button>
+        <div className="flex items-center space-x-3">
+          {selectedComponents.length > 0 && (
+            <button
+              onClick={handleGenerateBulkReport}
+              disabled={generateBulkReportMutation.isPending}
+              className="btn-secondary flex items-center"
+            >
+              <DocumentTextIcon className="w-4 h-4 mr-2" />
+              {generateBulkReportMutation.isPending ? 'Generating...' : `Generate Report (${selectedComponents.length})`}
+            </button>
+          )}
+          <button className="btn-primary flex items-center">
+            <PlusIcon className="w-4 h-4 mr-2" />
+            Add Component
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -161,6 +230,14 @@ const Components: React.FC = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <input
+                    type="checkbox"
+                    checked={selectedComponents.length === filteredComponents.length && filteredComponents.length > 0}
+                    onChange={handleSelectAll}
+                    className="rounded border-gray-300 text-railway-blue focus:ring-railway-blue"
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Component
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -189,6 +266,14 @@ const Components: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredComponents.map((component: Component) => (
                 <tr key={component.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={selectedComponents.includes(component.serial_id)}
+                      onChange={() => handleComponentSelect(component.serial_id)}
+                      className="rounded border-gray-300 text-railway-blue focus:ring-railway-blue"
+                    />
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
                       {component.serial_id}
@@ -240,6 +325,14 @@ const Components: React.FC = () => {
                         <EyeIcon className="w-4 h-4" />
                       </Link>
                       <button
+                        onClick={() => handleGenerateReport(component.serial_id)}
+                        disabled={generateReportMutation.isPending}
+                        className="text-green-600 hover:text-green-700 disabled:text-gray-400"
+                        title="Generate AI Report"
+                      >
+                        <DocumentTextIcon className="w-4 h-4" />
+                      </button>
+                      <button
                         className="text-gray-600 hover:text-gray-900"
                         title="Generate QR"
                         onClick={() => {
@@ -267,6 +360,17 @@ const Components: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={reportModalOpen}
+        onClose={() => {
+          setReportModalOpen(false);
+          setCurrentReport(null);
+        }}
+        report={currentReport}
+        isLoading={generateReportMutation.isPending || generateBulkReportMutation.isPending}
+      />
     </div>
   );
 };

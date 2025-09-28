@@ -30,7 +30,10 @@ if [ -d "frontend" ]; then
     # Install dependencies if node_modules doesn't exist
     if [ ! -d "node_modules" ]; then
         echo "📥 Installing frontend dependencies..."
-        npm install
+        npm install --legacy-peer-deps
+    else
+        echo "📥 Updating frontend dependencies..."
+        npm install --legacy-peer-deps
     fi
     
     # Build the frontend

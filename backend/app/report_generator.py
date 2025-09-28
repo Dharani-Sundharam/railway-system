@@ -89,27 +89,24 @@ def generate_component_report(db: Session, component_id: str) -> Dict[str, Any]:
         # Create the prompt for Gemini
         prompt = f"""
         You are an expert railway engineer analyzing track fitting components for Indian Railways. 
-        Generate a comprehensive technical report for the following component data:
+        Generate a concise technical report for the following component data:
 
         Component Data:
         {json.dumps(component_data, indent=2)}
 
-        Please provide a detailed report that includes:
+        Please provide a brief report (maximum 500 words) that includes:
 
-        1. **Executive Summary**: Brief overview of the component's current status and key findings
-        2. **Component Details**: Technical specifications, manufacturing info, and current status
-        3. **Vendor Information**: Manufacturer details, quality ratings, and certification status
-        4. **Location Details**: Installation location, track information, and GPS coordinates
-        5. **Inspection History**: Summary of all inspections, findings, and recommendations
-        6. **Scan Records**: Tracking history and location scans
-        7. **Quality Assessment**: Overall quality rating based on inspections and performance
-        8. **Maintenance Recommendations**: Specific actions needed based on inspection findings
-        9. **Risk Assessment**: Potential risks and their severity levels
-        10. **Compliance Status**: Adherence to railway standards and regulations
+        1. Executive Summary: Brief overview of the component's current status
+        2. Component Details: Technical specifications and current status
+        3. Vendor Information: Manufacturer details and quality ratings
+        4. Location Details: Installation location and GPS coordinates
+        5. Inspection History: Summary of inspections and findings
+        6. Quality Assessment: Overall quality rating
+        7. Maintenance Recommendations: Specific actions needed
+        8. Risk Assessment: Potential risks and severity levels
 
-        Format the report in a professional, technical style suitable for railway engineers and management.
-        Include specific dates, measurements, and actionable recommendations.
-        Highlight any critical issues that require immediate attention.
+        Format the report in plain text without markdown formatting. Use simple headings like "EXECUTIVE SUMMARY:" instead of **text**.
+        Keep it concise and professional for railway engineers.
         """
         
         # Generate the report using Gemini

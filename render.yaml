@@ -4,7 +4,7 @@ services:
     env: python
     buildCommand: |
       pip install -r requirements.txt
-      cd frontend && npm install && npm run build
+      cd frontend && npm install --legacy-peer-deps && npm run build
       cd .. && python deploy.py && python fix_simple_passwords.py
     startCommand: python main.py
     envVars:

@@ -167,8 +167,26 @@ const Components: React.FC = () => {
             Manage track fittings and components
           </p>
         </div>
-        <div className="flex items-center space-x-3">
-          {selectedComponents.length > 0 && (
+        <button className="btn-primary flex items-center">
+          <PlusIcon className="w-4 h-4 mr-2" />
+          Add Component
+        </button>
+      </div>
+
+      {/* Bulk Actions Bar */}
+      {selectedComponents.length > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <span className="text-sm font-medium text-blue-900">
+                {selectedComponents.length} component{selectedComponents.length > 1 ? 's' : ''} selected
+              </span>
+              {!reportServiceStatus?.available && (
+                <div className="text-sm text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">
+                  ⚠️ AI Report service unavailable
+                </div>
+              )}
+            </div>
             <button
               onClick={handleGenerateBulkReport}
               disabled={generateBulkReportMutation.isPending || !reportServiceStatus?.available}
@@ -176,20 +194,11 @@ const Components: React.FC = () => {
               title={!reportServiceStatus?.available ? 'Report generation service not available' : ''}
             >
               <DocumentTextIcon className="w-4 h-4 mr-2" />
-              {generateBulkReportMutation.isPending ? 'Generating...' : `Generate Report (${selectedComponents.length})`}
+              {generateBulkReportMutation.isPending ? 'Generating...' : `Generate AI Report (${selectedComponents.length})`}
             </button>
-          )}
-          {!reportServiceStatus?.available && (
-            <div className="text-sm text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">
-              ⚠️ AI Report service unavailable
-            </div>
-          )}
-          <button className="btn-primary flex items-center">
-            <PlusIcon className="w-4 h-4 mr-2" />
-            Add Component
-          </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Filters */}
       <div className="card p-4">

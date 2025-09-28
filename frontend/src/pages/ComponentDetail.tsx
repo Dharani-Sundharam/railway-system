@@ -1,20 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   ArrowLeftIcon,
   QrCodeIcon,
   ClockIcon,
   MapPinIcon,
   BuildingStorefrontIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
-import { componentsAPI, analyticsAPI } from '../services/api';
+import { componentsAPI, analyticsAPI, reportsAPI } from '../services/api';
 import { format } from 'date-fns';
 import QRCode from 'react-qr-code';
+import ReportModal from '../components/ReportModal';
+import ComponentMap from '../components/ComponentMap';
 
 const ComponentDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [currentReport, setCurrentReport] = useState<any>(null);
 
   const { data: component, isLoading } = useQuery({
     queryKey: ['component', id],
@@ -27,6 +32,34 @@ const ComponentDetail: React.FC = () => {
     queryFn: () => analyticsAPI.getComponentLifecycle(id!).then(res => res.data),
     enabled: !!id,
   });
+
+  const { data: reportServiceStatus } = useQuery({
+    queryKey: ['reportServiceStatus'],
+    queryFn: () => reportsAPI.getServiceStatus().then(res => res.data),
+    retry: false,
+  });
+
+  const generateReportMutation = useMutation({
+    mutationFn: (componentId: string) => reportsAPI.generateComponentReport(componentId),
+    onSuccess: (data) => {
+      setCurrentReport(data.data);
+      setReportModalOpen(true);
+    },
+    onError: (error) => {
+      console.error('Failed to generate report:', error);
+      alert('Failed to generate report. Please try again.');
+    },
+  });
+
+  const handleGenerateReport = () => {
+    if (!reportServiceStatus?.available) {
+      alert('Report generation service is not available. Please check if the Google Generative AI package is installed.');
+      return;
+    }
+    if (id) {
+      generateReportMutation.mutate(id);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -170,7 +203,7 @@ const ComponentDetail: React.FC = () => {
                 <MapPinIcon className="w-5 h-5 mr-2" />
                 Location Information
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="text-sm font-medium text-gray-500">Zone</label>
                   <div className="text-sm text-gray-900">{component.location.zone}</div>
@@ -196,6 +229,20 @@ const ComponentDetail: React.FC = () => {
                   <div className="text-sm text-gray-900">{component.location.track_number || 'N/A'}</div>
                 </div>
               </div>
+              
+              {/* Map */}
+              {component.location.gps_latitude && component.location.gps_longitude && (
+                <div>
+                  <h3 className="text-md font-medium text-gray-900 mb-3">Location Map</h3>
+                  <ComponentMap
+                    latitude={component.location.gps_latitude}
+                    longitude={component.location.gps_longitude}
+                    componentId={component.serial_id}
+                    location={`${component.location.zone} - ${component.location.division}`}
+                    height="300px"
+                  />
+                </div>
+              )}
             </div>
           )}
 
@@ -263,9 +310,6 @@ const ComponentDetail: React.FC = () => {
                   size={150}
                   level="H"
                 />
-              </div>
-              <div className="mt-3 text-xs text-gray-500 break-all">
-                {qrData}
               </div>
               <button className="mt-3 btn-secondary text-sm w-full">
                 Download QR Code
@@ -353,13 +397,30 @@ const ComponentDetail: React.FC = () => {
               <button className="btn-secondary w-full text-sm">
                 View History
               </button>
-              <button className="btn-secondary w-full text-sm">
-                Generate Report
+              <button 
+                onClick={handleGenerateReport}
+                disabled={generateReportMutation.isPending || !reportServiceStatus?.available}
+                className="btn-secondary w-full text-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                title={!reportServiceStatus?.available ? 'AI Report service unavailable' : 'Generate AI Report'}
+              >
+                <DocumentTextIcon className="w-4 h-4 mr-2" />
+                {generateReportMutation.isPending ? 'Generating...' : 'Generate AI Report'}
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={reportModalOpen}
+        onClose={() => {
+          setReportModalOpen(false);
+          setCurrentReport(null);
+        }}
+        report={currentReport}
+        isLoading={generateReportMutation.isPending}
+      />
     </div>
   );
 };

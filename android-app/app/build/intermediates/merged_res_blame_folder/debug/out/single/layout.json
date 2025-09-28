@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.railway.qrscanner.app-mergeDebugResources-57:/layout/activity_component_details.xml",
+        "source": "com.railway.qrscanner.app-main-60:/layout/activity_component_details.xml"
+    },
+    {
+        "merged": "com.railway.qrscanner.app-mergeDebugResources-57:/layout/activity_scanner.xml",
+        "source": "com.railway.qrscanner.app-main-60:/layout/activity_scanner.xml"
+    },
+    {
+        "merged": "com.railway.qrscanner.app-mergeDebugResources-57:/layout/activity_main.xml",
+        "source": "com.railway.qrscanner.app-main-60:/layout/activity_main.xml"
+    }
+]

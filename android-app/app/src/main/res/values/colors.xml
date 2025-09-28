@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Railway Theme Colors -->
+    <color name="primary_color">#1e40af</color>
+    <color name="secondary_color">#ea580c</color>
+    <color name="accent_color">#f59e0b</color>
+    <color name="success_color">#16a34a</color>
+    <color name="error_color">#dc2626</color>
+    <color name="warning_color">#f59e0b</color>
+    
+    <!-- Background Colors -->
+    <color name="background_color">#f8fafc</color>
+    <color name="surface_color">#ffffff</color>
+    <color name="card_background">#ffffff</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1f2937</color>
+    <color name="text_secondary">#6b7280</color>
+    <color name="text_hint">#9ca3af</color>
+    
+    <!-- Utility Colors -->
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="divider_color">#e5e7eb</color>
+    <color name="overlay_color">#80000000</color>
+    
+    <!-- Status Colors -->
+    <color name="status_active">#16a34a</color>
+    <color name="status_inactive">#6b7280</color>
+    <color name="status_warning">#f59e0b</color>
+    <color name="status_error">#dc2626</color>
+</resources>

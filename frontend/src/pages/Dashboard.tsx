@@ -17,8 +17,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
 } from 'recharts';
 import { analyticsAPI } from '../services/api';
 

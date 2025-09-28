@@ -10,9 +10,7 @@ import Vendors from './pages/Vendors';
 import Inspections from './pages/Inspections';
 import QRGenerator from './pages/QRGenerator';
 import Analytics from './pages/Analytics';
-import Login from './pages/Login';
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -55,23 +53,20 @@ function App() {
               }}
             />
             <Routes>
-              <Route path="/login" element={<Login />} />
               <Route path="/components/:id" element={<ComponentDetail />} />
               <Route
                 path="/*"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/components" element={<Components />} />
-                        <Route path="/vendors" element={<Vendors />} />
-                        <Route path="/inspections" element={<Inspections />} />
-                        <Route path="/qr-generator" element={<QRGenerator />} />
-                        <Route path="/analytics" element={<Analytics />} />
-                      </Routes>
-                    </Layout>
-                  </ProtectedRoute>
+                  <Layout>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/components" element={<Components />} />
+                      <Route path="/vendors" element={<Vendors />} />
+                      <Route path="/inspections" element={<Inspections />} />
+                      <Route path="/qr-generator" element={<QRGenerator />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                    </Routes>
+                  </Layout>
                 }
               />
             </Routes>

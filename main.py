@@ -163,14 +163,6 @@ async def serve_frontend(request: Request, full_path: str):
     </html>
     """)
 
-# Test login page
-@app.get("/test-login")
-async def test_login_page():
-    """Test login page for debugging"""
-    test_path = Path(__file__).parent / "test-login.html"
-    if test_path.exists():
-        return FileResponse(str(test_path))
-    return {"error": "Test page not found"}
 
 # Health check
 @app.get("/")

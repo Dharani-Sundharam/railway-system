@@ -46,8 +46,8 @@ required_files=(
     "main.py"
     "requirements.txt"
     "build.sh"
-    "website/backend/app"
-    "website/frontend/package.json"
+    "backend/app"
+    "frontend/package.json"
 )
 
 for file in "${required_files[@]}"; do

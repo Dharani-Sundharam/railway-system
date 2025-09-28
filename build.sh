@@ -9,16 +9,16 @@ echo "🚂 Building Railway System..."
 
 # Build frontend
 echo "📦 Building frontend..."
-cd website/frontend
+cd frontend
 npm install
 npm run build
-cd ../..
+cd ..
 
 # Create static directories
 echo "📁 Creating static directories..."
-mkdir -p website/backend/static/qr_codes
-mkdir -p website/backend/static/uploads
+mkdir -p backend/static/qr_codes
+mkdir -p backend/static/uploads
 
 echo "✅ Build complete!"
-echo "Frontend built in: website/frontend/build"
-echo "Backend ready in: website/backend"
+echo "Frontend built in: frontend/build"
+echo "Backend ready in: backend"

@@ -23,6 +23,8 @@ This guide will help you deploy the Indian Railways Track Fittings Management Sy
    - `main.py` (unified application)
    - `requirements.txt` (in root directory)
    - `build.sh` (build script)
+   - `backend/app/` (backend code)
+   - `frontend/package.json` (frontend code)
 
 ### Step 2: Deploy Using Blueprint
 

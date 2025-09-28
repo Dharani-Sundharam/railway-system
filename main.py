@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 # Add the backend app to Python path
-backend_path = Path(__file__).parent / "website" / "backend"
+backend_path = Path(__file__).parent / "backend"
 sys.path.insert(0, str(backend_path))
 
 from fastapi import FastAPI, Request
@@ -61,12 +61,12 @@ async def startup_event():
 app.mount("/api", backend_app)
 
 # Serve static files (QR codes, uploads)
-static_path = Path(__file__).parent / "website" / "backend" / "static"
+static_path = Path(__file__).parent / "backend" / "static"
 if static_path.exists():
     app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
 
 # Serve frontend static files
-frontend_build_path = Path(__file__).parent / "website" / "frontend" / "build"
+frontend_build_path = Path(__file__).parent / "frontend" / "build"
 if frontend_build_path.exists():
     app.mount("/assets", StaticFiles(directory=str(frontend_build_path / "static")), name="assets")
 

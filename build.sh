@@ -36,6 +36,11 @@ if [ -d "frontend" ]; then
         npm install --legacy-peer-deps
     fi
     
+    # Ensure react-leaflet compatibility
+    echo "🔧 Ensuring react-leaflet compatibility..."
+    npm install react-leaflet@4.2.1 --legacy-peer-deps
+    npm install --save-dev @types/leaflet --legacy-peer-deps
+    
     # Build the frontend
     echo "🔨 Building React app..."
     npm run build
